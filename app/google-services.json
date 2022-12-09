@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "953205350165",
+    "project_id": "mainantojitos-eec40",
+    "storage_bucket": "mainantojitos-eec40.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:953205350165:android:32f1e4f4e76b9143cd131c",
+        "android_client_info": {
+          "package_name": "es.uniovi.eii.mainantojitos"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "953205350165-mnv4867b62i5rc762b24s7osdbua3ia7.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyB6mHlGILxkfDbXHyf9GNgAwTI3ronwqfo"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "953205350165-mnv4867b62i5rc762b24s7osdbua3ia7.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
