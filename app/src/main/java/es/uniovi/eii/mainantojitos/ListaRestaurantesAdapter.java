@@ -6,26 +6,30 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ImageView;
+import android.widget.RatingBar;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.squareup.picasso.Picasso;
+
 import java.util.List;
 
+import es.uniovi.eii.mainantojitos.db.RestaurantePojo;
 import es.uniovi.eii.mainantojitos.modelo.Restaurante;
 
 public class ListaRestaurantesAdapter extends RecyclerView.Adapter<ListaRestaurantesAdapter.RestauranteViewHolder>{
 
 
     public interface OnItemClickListener{
-        void onItemClick(Restaurante item);
+        void onItemClick(RestaurantePojo item);
     }
-    private List<Restaurante> restauranteList;
+    private List<RestaurantePojo> restauranteList;
     private final OnItemClickListener listener;
 
 
-    public ListaRestaurantesAdapter(List<Restaurante> restauranteList, OnItemClickListener listener) {
+    public ListaRestaurantesAdapter(List<RestaurantePojo> restauranteList, OnItemClickListener listener) {
         this.restauranteList = restauranteList;
         this.listener = listener;
     }
@@ -46,7 +50,7 @@ public class ListaRestaurantesAdapter extends RecyclerView.Adapter<ListaRestaura
     @Override
     public void onBindViewHolder(@NonNull RestauranteViewHolder holder, int position) {
         // Extrae de la lista el elemento indicado por posición
-        Restaurante restaurante= restauranteList.get(position);
+        RestaurantePojo restaurante= restauranteList.get(position);
         Log.i("Lista","Visualiza elemento: "+restaurante);
         // llama al método de nuestro holder para asignar valores a los componentes
         // además, pasamos el listener del evento onClick
@@ -61,27 +65,36 @@ public class ListaRestaurantesAdapter extends RecyclerView.Adapter<ListaRestaura
     public static class RestauranteViewHolder extends RecyclerView.ViewHolder{
 
         private TextView nombreRestaurante;
-        private TextView telefono;
+        private TextView direccion;
         private ImageView imagen;
         private ImageView imagenCarta;
+        private RatingBar rating;
 
 
         public RestauranteViewHolder(View itemView) {
             super(itemView);
 
-            nombreRestaurante= (TextView)itemView.findViewById(R.id.nombreRestaurante);
-            telefono= (TextView)itemView.findViewById(R.id.telefono);
-            imagen= (ImageView)itemView.findViewById(R.id.imagen);
+            nombreRestaurante= (TextView)itemView.findViewById(R.id.txt_nombre_restaurante);
+            direccion= (TextView)itemView.findViewById(R.id.txt_direccion_restaurante);
+            imagen= (ImageView)itemView.findViewById(R.id.img_restaurante);
+            rating=(RatingBar)itemView.findViewById(R.id.ratingBar);
 //            imagenCarta= (ImageView)itemView.findViewById(R.id.imageViewCartaFragment);
 
         }
 
         // asignar valores a los componentes
-        public void bindUser(final Restaurante restaurante, final OnItemClickListener listener) {
-            nombreRestaurante.setText(restaurante.getNombre());
-            telefono.setText(restaurante.getTelefono());
+        public void bindUser(final RestaurantePojo restaurante, final OnItemClickListener listener) {
+            nombreRestaurante.setText(restaurante.getName());
+            //cambiar a getDireccion
+            direccion.setText(restaurante.getAddress());
+            //Lo mismo con rating
             //descripcion.setText(restaurante.getDescripcion());
-            imagen.setImageResource(restaurante.getDrawImg());
+            if(restaurante.getImage()!=null || restaurante.getImage()==""){
+                Picasso.get()
+                        .load(restaurante.getImage()).into(imagen);
+            }
+
+
             itemView.setOnClickListener(new View.OnClickListener() {
                 @Override public void onClick(View v) {
                     Log.i("Hola", "Hola");

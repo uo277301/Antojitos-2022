@@ -10,6 +10,13 @@ import android.os.Bundle;
 import android.util.Log;
 import android.util.LogPrinter;
 
+import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.android.gms.tasks.Task;
+
+import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.QueryDocumentSnapshot;
+import com.google.firebase.firestore.QuerySnapshot;
+
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
@@ -17,19 +24,22 @@ import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.List;
 
+import es.uniovi.eii.mainantojitos.db.RestaurantePojo;
 import es.uniovi.eii.mainantojitos.modelo.Categoria;
 import es.uniovi.eii.mainantojitos.modelo.Restaurante;
 
 public class PantallaPrincipal extends AppCompatActivity {
     private RecyclerView rvPrincipal;
-    private List<Restaurante> restaurantes;
-
     private int[] imagenes = {R.drawable.terraastur,R.drawable.mesonasturcon,R.drawable.terrasgallegas
             ,R.drawable.casa_marcial,R.drawable.casa_trabanco,R.drawable.la_salgar};
     private int[] cartas = {R.drawable.terraterra,R.drawable.mesonasturcon_carta,R.drawable.terrasgallegas_carta
-            ,R.drawable.casamarcial_carta,R.drawable.casatrabanco_carta,R.drawable.lasalgar_carta};
+            ,R.drawable.casamarcial_carta,R.drawable.casatrabanco_carta,R.drawable.casamarcial_carta};
     public static final String RESTAURANTE_SELECCIONADO ="restaurante_seleccionado";
 
+
+    //Cambios Restaurantes-Sprint3
+    FirebaseFirestore mFirestore;
+    private List<RestaurantePojo> restaurantesBase = new ArrayList<>();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -39,16 +49,15 @@ public class PantallaPrincipal extends AppCompatActivity {
         //Rellenamos el recyclerView con varios restaurantes
         //rellenarLista();
 
-        if(cartas.equals(null)){
-            Log.d("NULLLLLLLLLLLLLLLLLL","NULLLLLLLLLLLLLLLLLLLLLLL");
-        }
+        //Cambios Restaurantes-Sprint3
+        //cargarRestaurantes();
+        mFirestore = FirebaseFirestore.getInstance();
+        cargarRestaurantesFirebase();
 
 
-
-        cargarRestaurantes();
-        Log.d("Informacion:","Tamaño: "+restaurantes.size());
-        for (int i =0;i<restaurantes.size();i++){
-            Restaurante r = restaurantes.get(i);
+        Log.d("Informacion:","Tamaño: "+restaurantesBase.size());
+        for (int i =0;i<restaurantesBase.size();i++){
+            RestaurantePojo r = restaurantesBase.get(i);
             Log.d("Informacion:","Restaurante "+i+":"+r.toString());
         }
 
@@ -61,10 +70,10 @@ public class PantallaPrincipal extends AppCompatActivity {
         rvPrincipal.setLayoutManager(layoutManager);
 
         //Añadimos la lista de los restaurantes con el adapter
-        ListaRestaurantesAdapter lpAdapter= new ListaRestaurantesAdapter(restaurantes,
+        ListaRestaurantesAdapter lpAdapter= new ListaRestaurantesAdapter(restaurantesBase,
                 new ListaRestaurantesAdapter.OnItemClickListener() {
                     @Override
-                    public void onItemClick(Restaurante restaurante) {
+                    public void onItemClick(RestaurantePojo restaurante) {
                         // Esta seria la parte de michu de que ocurre al pulsar sobre un
                         // restaurante
                         clickonItem(restaurante);
@@ -75,7 +84,7 @@ public class PantallaPrincipal extends AppCompatActivity {
     }
 
     private void rellenarLista(){
-        restaurantes = new ArrayList<Restaurante>();
+        restaurantesBase = new ArrayList<RestaurantePojo>();
         Categoria categoria = new Categoria("Cultural","Restaurante para comer " +
                 "comida local para turistas.");
 
@@ -90,8 +99,8 @@ public class PantallaPrincipal extends AppCompatActivity {
 //                "Restaurante rural que te hara sentir como en casa."));
     }
 
-    public void clickonItem (Restaurante restaurante){
-        Log.i("Click adapter","Item Clicked "+restaurante.getNombre());
+    public void clickonItem (RestaurantePojo restaurante){
+        Log.i("Click adapter","Item Clicked "+restaurante.getName());
         //Toast.makeText(MainActivity.this, "Item Clicked "+user.getId(), Toast.LENGTH_LONG).show();
 
         //Seria la parte de MIGUEL
@@ -109,56 +118,48 @@ public class PantallaPrincipal extends AppCompatActivity {
      * Lee lista de restaurantes desde el fichero csv en assets
      * Crea restaurantes como un ArrayList<Restaurante>
      */
-    private void cargarRestaurantes() {
-         /*si un restaurante le falta la descripcion, el fondo o el trailer, le pongo unos por defecto.
-         De esta manera me aseguro estos campos en las películas*/
-        /*
-        String Caratula_por_defecto="https://image.tmdb.org/t/p/original/jnFCk7qGGWop2DgfnJXeKLZFuBq.jpg\n";
-        String fondo_por_defecto="https://image.tmdb.org/t/p/original/xJWPZIYOEFIjZpBL7SVBGnzRYXp.jpg\n";
-        String trailer_por_defecto="https://www.youtube.com/watch?v=lpEJVgysiWs\n";
-        */
-        Restaurante restaurante;
-        restaurantes = new ArrayList<>();
-
-        InputStream file = null;
-        InputStreamReader reader = null;
-        BufferedReader bufferedReader = null;
 
 
-        try {
-            file = getAssets().open("lista_restaurantes_url_utf8.csv");
-
-            reader = new InputStreamReader(file);
-            bufferedReader = new BufferedReader(reader);
-
-
-            String line = null;
-            while ((line = bufferedReader.readLine()) != null) {
-                String[] data = line.split(";");
-                if (data != null && data.length >= 5) {
-                    if (data.length>=5) {
-//                        restaurante = new Restaurante(data[0], data[1], new Categoria(data[2], "Hola"),"Por","defecto",0);
-                        int aux = Integer.parseInt(data[6]);
-                        restaurante = new Restaurante(data[0], data[1], data[4], data[5],imagenes[aux], cartas[aux]);
-                    } else {
-                        restaurante = null;
-                        //restaurante = new Restaurante(data[0], data[1], new Categoria(data[2], data[3]), data[4], data[5],imagenes[ Integer.parseInt(data[6])], cartas[ Integer.parseInt(data[6])]);
+    //Cambios Restaurantes-Sprint3
+    private void cargarRestaurantesFirebase(){
+        Task<QuerySnapshot> collection =
+                mFirestore.collection("restaurantes").get().addOnSuccessListener(new OnSuccessListener<QuerySnapshot>(){
+                    @Override
+                    public void onSuccess(QuerySnapshot queryDocumentSnapshots) {
+                        RestaurantePojo restaurante;
+                        for(QueryDocumentSnapshot query: queryDocumentSnapshots) {
+                            restaurante = new RestaurantePojo();
+                            if(query.get("id")!=null)
+                                restaurante.setId(query.get("id").toString());
+                            if(query.get("name")!=null)
+                                restaurante.setName(query.get("name").toString());
+                            if(query.get("address")!=null)
+                                restaurante.setAddress(query.get("address").toString());
+                            if(query.get("email")!=null)
+                                restaurante.setEmail(query.get("email").toString());
+                            if(query.get("image")!=null)
+                                restaurante.setImage(query.get("image").toString());
+                            if(query.get("latitude")!=null)
+                                restaurante.setLatitude(query.get("latitude").toString());
+                            if(query.get("longitude")!=null)
+                                restaurante.setLongitude(query.get("longitude").toString());
+                            if(query.get("phone")!=null)
+                                restaurante.setPhone(query.get("phone").toString());
+                            if(query.get("priceLevel")!=null)
+                                restaurante.setPriceLevel(query.get("priceLevel").toString());
+                            if(query.get("rating")!=null)
+                                restaurante.setRating(Float.parseFloat(query.get("rating").toString()));
+                            if(query.get("webUrl")!=null)
+                                restaurante.setWebUrl(query.get("webUrl").toString());
+                            if(query.get("website")!=null)
+                                restaurante.setWebsite(query.get("website").toString());
+                            restaurantesBase.add(restaurante);
+                            Log.d("Procesados hasta ahora:",""+restaurantesBase.size());
+                        }
                     }
-                    Log.d("cargarRestaurantes", restaurante.toString());
-                    restaurantes.add(restaurante);
-                }
-            }
+                });
+        while(!collection.isComplete()){
 
-        } catch (IOException e) {
-            e.printStackTrace();
-        } finally {
-            if (bufferedReader != null) {
-                try {
-                    bufferedReader.close();
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
-            }
         }
 
     }
