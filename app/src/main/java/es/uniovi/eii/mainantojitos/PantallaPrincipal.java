@@ -83,21 +83,6 @@ public class PantallaPrincipal extends AppCompatActivity {
         rvPrincipal.setAdapter(lpAdapter);
     }
 
-    private void rellenarLista(){
-        restaurantesBase = new ArrayList<RestaurantePojo>();
-        Categoria categoria = new Categoria("Cultural","Restaurante para comer " +
-                "comida local para turistas.");
-
-//        restaurantes.add(new Restaurante("Terra Astur","985648192",categoria,
-//                "Uno de los restaurantes más visitados de Asturias",
-//                "En nuestra carta se puede encontrar desde cachopo a una serie de platos " +
-//                        "regionales"));
-//
-//
-//        restaurantes.add(new Restaurante("Cal Xabu","11111111",categoria,
-//                "Uno de los restaurantes más visitados de Asturias",
-//                "Restaurante rural que te hara sentir como en casa."));
-    }
 
     public void clickonItem (RestaurantePojo restaurante){
         Log.i("Click adapter","Item Clicked "+restaurante.getName());

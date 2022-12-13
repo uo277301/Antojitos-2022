@@ -4,7 +4,6 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.AdapterView;
 import android.widget.ImageView;
 import android.widget.RatingBar;
 import android.widget.TextView;
@@ -17,7 +16,6 @@ import com.squareup.picasso.Picasso;
 import java.util.List;
 
 import es.uniovi.eii.mainantojitos.db.RestaurantePojo;
-import es.uniovi.eii.mainantojitos.modelo.Restaurante;
 
 public class ListaRestaurantesAdapter extends RecyclerView.Adapter<ListaRestaurantesAdapter.RestauranteViewHolder>{
 
@@ -74,10 +72,10 @@ public class ListaRestaurantesAdapter extends RecyclerView.Adapter<ListaRestaura
         public RestauranteViewHolder(View itemView) {
             super(itemView);
 
-            nombreRestaurante= (TextView)itemView.findViewById(R.id.txt_nombre_restaurante);
+            nombreRestaurante= (TextView)itemView.findViewById(R.id.txt_nombre_usuario);
             direccion= (TextView)itemView.findViewById(R.id.txt_direccion_restaurante);
             imagen= (ImageView)itemView.findViewById(R.id.img_restaurante);
-            rating=(RatingBar)itemView.findViewById(R.id.ratingBar);
+            rating=(RatingBar)itemView.findViewById(R.id.ratingBar_reseña);
 //            imagenCarta= (ImageView)itemView.findViewById(R.id.imageViewCartaFragment);
 
         }

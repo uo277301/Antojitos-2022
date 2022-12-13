@@ -26,7 +26,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content">
             <TextView
-                android:id="@+id/txt_nombre_restaurante"
+                android:id="@+id/txt_nombre_usuario"
                 android:text="@string/nombreRestaurante"
                 android:textSize="20sp"
                 android:textColor="@android:color/black"
@@ -42,7 +42,7 @@
                 android:layout_height="wrap_content"/>
 
             <RatingBar
-                android:id="@+id/ratingBar"
+                android:id="@+id/ratingBar_reseña"
                 style="@style/Widget.AppCompat.RatingBar.Small"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content" />
