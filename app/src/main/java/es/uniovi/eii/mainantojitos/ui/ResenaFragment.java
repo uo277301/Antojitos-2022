@@ -1,9 +1,9 @@
 package es.uniovi.eii.mainantojitos.ui;
 
+import android.app.Fragment;
 import android.content.Intent;
 import android.os.Bundle;
 
-import androidx.fragment.app.Fragment;
 
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -63,7 +63,10 @@ public class ResenaFragment extends Fragment {
         //addResena = root.findViewById(R.id.floatingAnadirResena); BOTON AÑADIR RESEÑA
         mFirestore = FirebaseFirestore.getInstance();
 
-        cargarResenas();
+        cargarResenas(); // las carga desde el firebase
+        enseñaReseña(); // enseñarlas (esto se hace asi para no tener dos veces lo mismo
+                        // al crear y cuando el usuario meta una reseña.
+        // MIRAR MATERIAL.IO TIENE ICONOS
 
         addResena.setOnClickListener(new View.OnClickListener(){
             @Override
@@ -75,15 +78,25 @@ public class ResenaFragment extends Fragment {
         return root;
     }
 
-    // Crear una ventana donde se añadan las reseñas en la base y aparezcan luego
+    /**
+     * 1- abre una nueva ventana/pestaña
+     * 2- en la ventana nueva, que el usuario ponga:
+     *      - rating en estrellas
+     *      - comentario
+     * 3- guardar estos datos en firestore
+     * 4- volver a enseñar el fragment con las reseñas
+     */
     private void creaResena() {
     }
 
-    // Cargar las reseñas desde el firebase
+    /**
+     * 1- abrir las reseñas del firestore
+     * 2- almacenarlas
+     */
     private void cargarResenas() {
 
         Task<QuerySnapshot> collection =
-                mFirestore.collection("restaurantes").get().addOnSuccessListener(new OnSuccessListener<QuerySnapshot>(){
+                mFirestore.collection("reseñas").get().addOnSuccessListener(new OnSuccessListener<QuerySnapshot>(){
                     @Override
                     public void onSuccess(QuerySnapshot queryDocumentSnapshots) {
                         RestaurantePojo restaurante;
@@ -91,8 +104,8 @@ public class ResenaFragment extends Fragment {
                             restaurante = new RestaurantePojo();
                             if(query.get("id")!=null)
                                 restaurante.setId(query.get("id").toString());
-                            if(query.get("name")!=null)
-                                restaurante.setName(query.get("name").toString());
+                            if(query.get("email")!=null)
+                                restaurante.setName(query.get("email").toString());
                             if(query.get("rating")!=null)
                                 restaurante.setRating(Float.parseFloat(query.get("rating").toString()));
                             if(query.get("reviews")!=null)
@@ -108,6 +121,10 @@ public class ResenaFragment extends Fragment {
         }
     }
 
+    /**
+     * 1- cargar las cardview
+     * 2- meter las reseñas en las cardview
+     */
     private void enseñaReseña() {
 
     }
