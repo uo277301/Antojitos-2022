@@ -77,7 +77,7 @@ public class ShowRestaurante extends AppCompatActivity {
         imagenRestaurante= (ImageView)findViewById(fotele);
         //categoria= (TextView) findViewById(R.id.categoria_res);
 
-        loadFragmentInfo(firstFragment);
+        loadFragmentInfo();
 
         // Si el restaurante no es null, que muestre los datos EN EL INFO FRAGMENT
         if (restaurante !=null)
@@ -114,11 +114,11 @@ public class ShowRestaurante extends AppCompatActivity {
 
                 switch (item.getItemId()) {
                     case R.id.navigation_info:
-                        loadFragmentInfo(firstFragment);
+                        loadFragmentInfo();
                         return true;
 
                     case R.id.navigation_reseñas:
-                        loadFragmentReseñas(thirdFragment);
+                        loadFragmentReseñas();
                         return true;
                     default:
                         throw new IllegalStateException("Unexpected value: " + item.getItemId());
@@ -129,7 +129,7 @@ public class ShowRestaurante extends AppCompatActivity {
         }
     };
 
-    private void loadFragmentReseñas(ResenaFragment thirdFragment) {
+    private void loadFragmentReseñas() {
 
         ResenaFragment info = new ResenaFragment();
         Bundle args = new Bundle();
@@ -142,7 +142,7 @@ public class ShowRestaurante extends AppCompatActivity {
 
     }
 
-    public void loadFragmentInfo(Fragment fragment){
+    public void loadFragmentInfo(){
         InfoFragment2 info = new InfoFragment2();
         Bundle args = new Bundle();
         args.putString(InfoFragment2.NOMBRE, restaurante.getName());

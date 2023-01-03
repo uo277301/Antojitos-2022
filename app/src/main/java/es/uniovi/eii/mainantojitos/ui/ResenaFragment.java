@@ -25,6 +25,7 @@ import es.uniovi.eii.mainantojitos.LoginActivity;
 import es.uniovi.eii.mainantojitos.R;
 import es.uniovi.eii.mainantojitos.RegistrarseActivity;
 import es.uniovi.eii.mainantojitos.db.RestaurantePojo;
+import es.uniovi.eii.mainantojitos.modelo.Reseña;
 import es.uniovi.eii.mainantojitos.modelo.Restaurante;
 
 public class ResenaFragment extends Fragment {
@@ -59,7 +60,11 @@ public class ResenaFragment extends Fragment {
 
         View root = inflater.inflate(R.layout.fragment_resena, container, false);
         Bundle args=getArguments();
-        restaurante = args.getParcelable(RESTAURANTE);
+
+        if(args != null){
+            restaurante = args.getParcelable(RESTAURANTE);
+        }
+
         //addResena = root.findViewById(R.id.floatingAnadirResena); BOTON AÑADIR RESEÑA
         mFirestore = FirebaseFirestore.getInstance();
 
@@ -99,19 +104,21 @@ public class ResenaFragment extends Fragment {
                 mFirestore.collection("reseñas").get().addOnSuccessListener(new OnSuccessListener<QuerySnapshot>(){
                     @Override
                     public void onSuccess(QuerySnapshot queryDocumentSnapshots) {
-                        RestaurantePojo restaurante;
+                        Reseña reseña;
                         for(QueryDocumentSnapshot query: queryDocumentSnapshots) {
-                            restaurante = new RestaurantePojo();
-                            if(query.get("id")!=null)
-                                restaurante.setId(query.get("id").toString());
-                            if(query.get("email")!=null)
-                                restaurante.setName(query.get("email").toString());
-                            if(query.get("rating")!=null)
-                                restaurante.setRating(Float.parseFloat(query.get("rating").toString()));
-                            if(query.get("reviews")!=null)
-                                restaurante.setReviews((String[]) query.get("reviews"));
-                            if(query.get("reviewsCount")!=null)
-                                restaurante.setNumberOfReviews(Integer.parseInt(query.get("reviewsCount").toString()));
+                            reseña = new Reseña();
+
+                            // Comprobacion de que se enseñen solo las reseñas del restaurante que queremos
+                            String aux = query.get("id").toString();
+                            if(aux!=null && aux == restaurante.getId()){
+                                reseña.setId(query.get("id").toString());
+                                if(query.get("email")!=null)
+                                    reseña.setEmail(query.get("email").toString());
+                                if(query.get("rating")!=null)
+                                    reseña.setRating(Float.parseFloat(query.get("rating").toString()));
+                                if(query.get("reseña")!=null)
+                                    reseña.setReseña(query.get("reviews").toString());
+                            }
                         }
                         enseñaReseña();
                     }

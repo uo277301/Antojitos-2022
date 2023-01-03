@@ -14,6 +14,10 @@ public class Reseña {
         this.rating = rating;
     }
 
+    public Reseña() {
+
+    }
+
     public String getId() {
         return id;
     }
