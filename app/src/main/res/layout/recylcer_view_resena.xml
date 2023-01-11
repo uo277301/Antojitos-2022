@@ -14,7 +14,7 @@
 
         <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="198dp"
+            android:layout_height="match_parent"
             android:orientation="vertical"
             android:padding="8dp">
 
@@ -36,7 +36,9 @@
                 android:id="@+id/ratingBar_reseña"
                 style="@style/Widget.AppCompat.RatingBar.Small"
                 android:layout_width="104dp"
-                android:layout_height="31dp" />
+                android:layout_height="44dp"
+                android:gravity="center"
+                android:numStars="5" />
 
             <TextView
                 android:id="@+id/textoReseñaCliente"

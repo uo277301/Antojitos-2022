@@ -30,9 +30,9 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="AÑADIR"
-        tools:layout_editor_absoluteX="296dp"
-        tools:layout_editor_absoluteY="653dp"
-        tools:ignore="MissingConstraints" />
+        tools:ignore="MissingConstraints"
+        tools:layout_editor_absoluteX="192dp"
+        tools:layout_editor_absoluteY="667dp" />
 
     <Button
         android:id="@+id/button_cancelar"
@@ -48,7 +48,7 @@
         android:id="@+id/ratingBar_puntuacion"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:isIndicator="true"
+        android:isIndicator="false"
         app:layout_constraintBottom_toTopOf="@+id/textInputLayout"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"

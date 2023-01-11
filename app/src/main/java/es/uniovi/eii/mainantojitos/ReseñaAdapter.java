@@ -52,17 +52,18 @@ public class ReseñaAdapter extends RecyclerView.Adapter<ReseñaAdapter.ReseñaV
     public ReseñaAdapter.ReseñaViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         View itemView = LayoutInflater.from(parent.getContext())
                 .inflate(R.layout.recylcer_view_resena, parent, false);
-        return new ReseñaAdapter.ReseñaViewHolder(itemView);
+        return new ReseñaViewHolder(itemView);
     }
 
     @Override
     public void onBindViewHolder(@NonNull ReseñaAdapter.ReseñaViewHolder holder, int position) {
-
+        Reseña res= listaReseña.get(position);
+        holder.bindUser(res, listener);
     }
 
     @Override
     public int getItemCount() {
-        return 0;
+        return listaReseña.size();
     }
 
     public static class ReseñaViewHolder extends RecyclerView.ViewHolder{
@@ -85,8 +86,7 @@ public class ReseñaAdapter extends RecyclerView.Adapter<ReseñaAdapter.ReseñaV
         public void bindUser(final Reseña reseña, final OnItemClickListener listener) {
             nombreUsuario.setText(reseña.getEmail());
             reseñaUser.setText(reseña.getReseña());
-            rating.setNumStars((int) reseña.getRating());
-
+            rating.setRating((float) reseña.getRating());
 
         }
     }

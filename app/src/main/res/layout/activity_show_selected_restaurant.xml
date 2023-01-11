@@ -7,16 +7,52 @@
     android:layout_height="match_parent"
     tools:context=".ui.InfoFragment2">
 
+    <com.google.android.material.appbar.AppBarLayout
+        android:id="@+id/appbar"
 
+        android:layout_height="192dp"
+        android:layout_width="match_parent"
+        tools:ignore="MissingConstraints">
+
+        <com.google.android.material.appbar.CollapsingToolbarLayout
+            android:id="@+id/toolbar_layout"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            app:toolbarId="@+id/toolbar_detrasdefoto"
+            app:layout_scrollFlags="scroll|enterAlways|enterAlwaysCollapsed"
+            app:layout_scrollInterpolator="@android:anim/decelerate_interpolator"
+
+            app:contentScrim="?attr/colorPrimary">
+
+            <ImageView
+                android:id="@+id/imagen_restaurante_info"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:scaleType="centerCrop"
+                android:layout_centerVertical="true"
+                android:layout_gravity="center"
+                android:src="@drawable/tierra_astur"
+                app:layout_collapseMode="parallax" />
+
+            <androidx.appcompat.widget.Toolbar
+                android:id="@+id/toolbar_detrasdefoto"
+                android:layout_height="?attr/actionBarSize"
+                android:layout_width="match_parent"
+                app:layout_collapseMode="pin"
+                app:popupTheme="@style/AppTheme.PopupOverlay" />
+
+        </com.google.android.material.appbar.CollapsingToolbarLayout>
+    </com.google.android.material.appbar.AppBarLayout>
 
     <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_margin="25sp"
+        android:layout_width="350dp"
+        android:layout_height="453dp"
+        android:layout_margin="0dp"
         android:orientation="vertical"
-        tools:layout_editor_absoluteX="48dp"
-        tools:layout_editor_absoluteY="48dp">
-
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/appbar">
 
 
         <TextView
@@ -61,13 +97,13 @@
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:padding="8dp"
-                android:textSize="20sp"
-                android:text="Web:" />
+                android:text="Web:"
+                android:textSize="20sp" />
 
             <Button
                 android:id="@+id/button_web"
                 android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
+                android:layout_height="match_parent"
                 android:layout_weight="1"
                 android:background="#148FE1"
                 android:text="Ir a la web" />
@@ -77,21 +113,23 @@
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/recycler_tarjetas_reseñas"
             android:layout_width="match_parent"
-            android:layout_height="match_parent" />
+            android:layout_height="254dp" />
+
+        <com.google.android.material.floatingactionbutton.FloatingActionButton
+            android:id="@+id/floating_button_añadir_reseña"
+            android:layout_width="68dp"
+            android:layout_height="66dp"
+            android:layout_alignParentEnd="true"
+            android:layout_alignParentRight="true"
+            android:layout_alignParentBottom="true"
+            android:layout_gravity="end|bottom"
+            app:srcCompat="@android:drawable/ic_input_add"
+            tools:ignore="MissingConstraints" />
 
     </LinearLayout>
 
-    <com.google.android.material.floatingactionbutton.FloatingActionButton
-        android:id="@+id/floating_button_añadir_reseña"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="bottom|end"
-        android:layout_marginEnd="@dimen/fab_margin"
-        android:layout_marginBottom="16dp"
-        app:srcCompat="@android:drawable/ic_input_add"
-        tools:ignore="MissingConstraints" />
-
 </androidx.constraintlayout.widget.ConstraintLayout>
+
 
 
 

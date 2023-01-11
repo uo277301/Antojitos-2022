@@ -21,7 +21,7 @@ import com.google.firebase.auth.FirebaseUser;
 
 public class LoginActivity extends AppCompatActivity {
 
-    private static final String EMAIL = "email";
+    public static final String EMAIL = "email";
     TextView crearCuenta;
     Button inicioiSes;
     private FirebaseAuth mAuth;

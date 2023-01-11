@@ -20,7 +20,7 @@ import com.google.firebase.auth.FirebaseUser;
 
 public class RegistrarseActivity extends AppCompatActivity {
 
-    private static final String EMAIL = "email";
+    public static final String EMAIL = "email";
     TextView textViewYaHayCuenta;
     Button creaCuenta;
     FirebaseAuth mAuth;

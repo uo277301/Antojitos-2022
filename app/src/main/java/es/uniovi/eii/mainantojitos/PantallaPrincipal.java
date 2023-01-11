@@ -50,7 +50,7 @@ public class PantallaPrincipal extends AppCompatActivity {
         setContentView(R.layout.activity_pantalla_principal);
 
         Intent intentRes= getIntent();
-        email = intentRes.getParcelableExtra(PantallaPrincipal.EMAIL);
+        email = intentRes.getParcelableExtra(LoginActivity.EMAIL);
 
         //Rellenamos el recyclerView con varios restaurantes
         //rellenarLista();
@@ -59,7 +59,6 @@ public class PantallaPrincipal extends AppCompatActivity {
         //cargarRestaurantes();
         mFirestore = FirebaseFirestore.getInstance();
         cargarRestaurantesFirebase();
-
 
         Log.d("Informacion:","Tamaño: "+restaurantesBase.size());
         for (int i =0;i<restaurantesBase.size();i++){
@@ -116,9 +115,6 @@ public class PantallaPrincipal extends AppCompatActivity {
                 mFirestore.collection("restaurantes").get().addOnSuccessListener(new OnSuccessListener<QuerySnapshot>(){
                     @Override
                     public void onSuccess(QuerySnapshot queryDocumentSnapshots) {
-                        if(restaurantesBase.size() > 100){
-                            return;
-                        }
                         RestaurantePojo restaurante;
                         for(QueryDocumentSnapshot query: queryDocumentSnapshots) {
                             restaurante = new RestaurantePojo();
@@ -151,7 +147,7 @@ public class PantallaPrincipal extends AppCompatActivity {
                         }
                     }
                 });
-        while(!collection.isComplete() && restaurantesBase.size() < 10){
+        while(!collection.isComplete()){
 
         }
     }

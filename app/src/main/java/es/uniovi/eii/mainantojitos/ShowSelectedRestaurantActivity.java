@@ -8,10 +8,12 @@ import android.os.Bundle;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.android.material.appbar.CollapsingToolbarLayout;
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.snackbar.Snackbar;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
+import com.squareup.picasso.Picasso;
 
 import androidx.appcompat.app.AppCompatActivity;
 
@@ -25,6 +27,7 @@ import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
 import androidx.navigation.ui.AppBarConfiguration;
 import androidx.navigation.ui.NavigationUI;
+import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import java.util.ArrayList;
@@ -48,7 +51,7 @@ public class ShowSelectedRestaurantActivity extends AppCompatActivity {
     ImageView imagenRestaurante;
     TextView nombre;
     TextView telefono;
-    Button añadeReseña;
+    FloatingActionButton añadeReseña;
     String web;
     CollapsingToolbarLayout toolBarLayout;
     String email;
@@ -77,18 +80,41 @@ public class ShowSelectedRestaurantActivity extends AppCompatActivity {
         toolBarLayout = (CollapsingToolbarLayout) findViewById(R.id.toolbar_layout);
         telefono= (TextView)findViewById(R.id.textViewTelefono);
         nombre= (TextView)findViewById(R.id.textViewNombreRestaurante);
-        añadeReseña = (Button) findViewById(R.id.floating_button_añadir_reseña);
+        añadeReseña = (FloatingActionButton) findViewById(R.id.floating_button_añadir_reseña);
         mFirestore = FirebaseFirestore.getInstance();
 
-        int fotoRestaurante = R.id.imagen_restaurante;
+
+        int fotoRestaurante = R.id.imagen_restaurante_info;
         Log.i("Foto","Foto: " + fotoRestaurante);
         imagenRestaurante= (ImageView)findViewById(fotoRestaurante);
+        Picasso.get()
+                .load(restaurante.getImage()).into(imagenRestaurante);
 
         // CARGAR LOS DATOS DEL RESTAURANTE Y EL RECYCLER CON LAS RESEÑAS
         cargarDatosRestaurante();
         cargarResenas();
-        ReseñaAdapter adapter = new ReseñaAdapter(reseñasBase);
-        revReseña.setAdapter(adapter);
+
+        //Obtengo el recyclerView donde van a estar todas los restaurantes
+        revReseña = (RecyclerView) findViewById(R.id.recycler_tarjetas_reseñas);
+        revReseña.setHasFixedSize(true);
+
+        //Creo un layout para el recyclerView y se lo asigno
+        RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(getApplicationContext());
+        revReseña.setLayoutManager(layoutManager);
+
+        //Añadimos la lista de los restaurantes con el adapter
+        ReseñaAdapter lpAdapter= new ReseñaAdapter(reseñasBase,
+                new ReseñaAdapter.OnItemClickListener() {
+                    @Override
+                    public void onItemClick(Reseña reseña) {
+                        Log.d("Reseña pulsada", "Reseña");
+                    }
+                });
+        revReseña.setAdapter(lpAdapter);
+
+//
+//        ReseñaAdapter adapter = new ReseñaAdapter(reseñasBase);
+//        revReseña.setAdapter(adapter);
 
         // BOTON AÑADIR
         añadeReseña.setOnClickListener(new View.OnClickListener() {
@@ -153,17 +179,24 @@ public class ShowSelectedRestaurantActivity extends AppCompatActivity {
 
                             // Comprobacion de que se enseñen solo las reseñas del restaurante que queremos
                             String aux = query.get("id").toString();
-                            if(aux!=null && aux == restaurante.getId()){
+                            Log.d("AUX", aux + "!!!!!!!!!!!!!!!!!!!!!!!!!");
+                            Log.d("id", restaurante.getId() + "!!!!!!!!!!!!!!!!!!!!!!!!!");
+
+                            if(aux!=null && aux.equals(restaurante.getId())){
                                 reseña.setId(query.get("id").toString());
                                 if(query.get("email")!=null)
                                     reseña.setEmail(query.get("email").toString());
                                 if(query.get("rating")!=null)
                                     reseña.setRating(Float.parseFloat(query.get("rating").toString()));
                                 if(query.get("reseña")!=null)
-                                    reseña.setReseña(query.get("reviews").toString());
+                                    reseña.setReseña(query.get("reseña").toString());
                             }
+                            Log.d("RESEÑA A AÑADIR",reseña.getReseña()+" --> se añade o que");
+                            if(reseña.getId() != null){
+                                reseñasBase.add(reseña);
+                            }
+                            Log.d("RESEÑA AÑADIDA",reseñasBase.get(0) +" --> se añade o que");
 
-                            reseñasBase.add(reseña);
                         }
                     }
                 });

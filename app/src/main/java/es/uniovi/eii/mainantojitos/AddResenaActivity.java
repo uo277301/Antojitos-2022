@@ -10,6 +10,7 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.RatingBar;
 import android.widget.TextView;
 
@@ -17,14 +18,18 @@ import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.android.material.textfield.TextInputEditText;
+import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QuerySnapshot;
+import com.google.firebase.firestore.SetOptions;
 import com.google.firestore.v1.WriteResult;
+import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.UUID;
 
 import es.uniovi.eii.mainantojitos.db.RestaurantePojo;
 import es.uniovi.eii.mainantojitos.modelo.Reseña;
@@ -36,6 +41,7 @@ public class AddResenaActivity extends AppCompatActivity {
     private TextView nombreRestaurante;
     private RatingBar ratingBar;
     private TextInputEditText editTextReseña;
+    private ImageView fotoRest;
 
     private RestaurantePojo restaurante;
     private Reseña reseña;
@@ -52,7 +58,7 @@ public class AddResenaActivity extends AppCompatActivity {
 
         Intent intentRes = getIntent();
         restaurante = intentRes.getParcelableExtra(ShowRestaurante.RESTAURANTE_SELECCIONADO);
-        correoUsuario = intentRes.getParcelableExtra(ShowRestaurante.EMAIL_USUARIO);
+        correoUsuario = intentRes.getParcelableExtra(ShowSelectedRestaurantActivity.EMAIL_USUARIO);
 
         nombreRestaurante = (TextView) findViewById(R.id.textView_nombre_restaurante);
         botonCancelar = (Button) findViewById(R.id.button_cancelar);
@@ -60,13 +66,35 @@ public class AddResenaActivity extends AppCompatActivity {
         ratingBar = (RatingBar) findViewById(R.id.ratingBar_puntuacion);
         editTextReseña = (TextInputEditText) findViewById(R.id.textInputReseña);
 
+        nombreRestaurante.setText(restaurante.getName());
+
         puntuacionUsuario = 0.0;
+
+        mFirestore = FirebaseFirestore.getInstance();
 
         // FUNCIONALIDAD DEL BOTON AÑADIR
         botonAñade.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 añadeReseña();
+
+//                String email = correoUsuario;
+//                String textoReseña = editTextReseña.getText().toString();
+//                String idRestaurante = restaurante.getId();
+//
+////        Reseña reseñaAñadir = new Reseña(idRestaurante, email, textoReseña, rating);
+//
+//                if(textoReseña.isEmpty()){
+//                    editTextReseña.setError("Introduzca una reseña");
+//                }
+//
+//                Map<String, Object> res = new HashMap<>();
+//                res.put("email", email);
+//                res.put("id", idRestaurante);
+//                res.put("rating", puntuacionUsuario);
+//                res.put("reseña", textoReseña);
+//
+//                mFirestore.
             }
         });
 
@@ -107,7 +135,7 @@ public class AddResenaActivity extends AppCompatActivity {
      * Prepara los datos para añadirlos y los añade en el firebase
      */
     private void añadeReseña() {
-        String email = correoUsuario;
+        String email = FirebaseAuth.getInstance().getCurrentUser().getEmail();
         String textoReseña = editTextReseña.getText().toString();
         String idRestaurante = restaurante.getId();
 
@@ -117,14 +145,15 @@ public class AddResenaActivity extends AppCompatActivity {
             editTextReseña.setError("Introduzca una reseña");
         }
 
-        Map<String, Object> res = new HashMap<>();
+        Map<String, String> res = new HashMap<>();
         res.put("email", email);
         res.put("id", idRestaurante);
-        res.put("rating", puntuacionUsuario);
+        res.put("rating", String.valueOf(puntuacionUsuario));
         res.put("reseña", textoReseña);
 
+
         Task<Void> collection =
-                mFirestore.collection("reseñas").document().set(res).addOnSuccessListener(new OnSuccessListener<Void>() {
+                mFirestore.collection("reseñas").document(UUID.randomUUID().toString()).set(res).addOnSuccessListener(new OnSuccessListener<Void>() {
                     @Override
                     public void onSuccess(Void aVoid) {
                         Log.d(TAG, "Reseña guardada con éxito!");

@@ -86,9 +86,9 @@ public class ShowRestaurante extends AppCompatActivity {
         descripcion = (TextView) findViewById(R.id.textViewDescripcion);
         imagenCarta =(ImageView) findViewById(R.id.imageViewCartaFragment);
 
-        int fotele = R.id.imagen_restaurante;
-        Log.i("Foto","Foto: " + fotele);
-        imagenRestaurante= (ImageView)findViewById(fotele);
+//        int fotele = R.id.imagen_restaurante;
+//        Log.i("Foto","Foto: " + fotele);
+//        imagenRestaurante= (ImageView)findViewById(fotele);
         //categoria= (TextView) findViewById(R.id.categoria_res);
 
 //        revReseña = (RecyclerView) findViewById(R.id.recyclerReseña);
