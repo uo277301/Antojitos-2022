@@ -1,8 +1,11 @@
 package es.uniovi.eii.mainantojitos.ui;
 
-import android.app.Fragment;
+import android.annotation.SuppressLint;
+import android.app.ActivityOptions;
 import android.content.Intent;
 import android.os.Bundle;
+import android.content.ContextWrapper;
+
 
 
 import android.util.Log;
@@ -11,6 +14,12 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ImageView;
+
+import androidx.fragment.app.Fragment;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.fragment.app.FragmentTransaction;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
@@ -21,9 +30,14 @@ import com.google.firebase.firestore.QuerySnapshot;
 import java.util.ArrayList;
 import java.util.List;
 
+import es.uniovi.eii.mainantojitos.AddResenaActivity;
+import es.uniovi.eii.mainantojitos.ListaRestaurantesAdapter;
 import es.uniovi.eii.mainantojitos.LoginActivity;
+import es.uniovi.eii.mainantojitos.PantallaPrincipal;
 import es.uniovi.eii.mainantojitos.R;
 import es.uniovi.eii.mainantojitos.RegistrarseActivity;
+import es.uniovi.eii.mainantojitos.ReseñaAdapter;
+import es.uniovi.eii.mainantojitos.ShowRestaurante;
 import es.uniovi.eii.mainantojitos.db.RestaurantePojo;
 import es.uniovi.eii.mainantojitos.modelo.Reseña;
 import es.uniovi.eii.mainantojitos.modelo.Restaurante;
@@ -33,12 +47,15 @@ public class ResenaFragment extends Fragment {
 
     public static final String RESTAURANTE="restaurante";
     public static final String RESEÑAS="reseñas";
+    public static final String ID="id";
 
     private RestaurantePojo restaurante;
     Button addResena;
 
     FirebaseFirestore mFirestore;
-    private List<RestaurantePojo> restaurantesBase = new ArrayList<>();
+    private List<Reseña> reseñasBase = new ArrayList<>();
+
+    private RecyclerView revReseña;
 
     public ResenaFragment() {
         // Required empty public constructor
@@ -53,25 +70,27 @@ public class ResenaFragment extends Fragment {
 //    }
     
 
+    @SuppressLint("ResourceType")
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
 
 
-        View root = inflater.inflate(R.layout.fragment_resena, container, false);
+        View root = inflater.inflate(R.layout.recylcer_view_resena, container, false);
         Bundle args=getArguments();
 
-        if(args != null){
-            restaurante = args.getParcelable(RESTAURANTE);
-        }
+        revReseña = (RecyclerView) root.findViewById(R.layout.recylcer_view_resena);
+        reseñasBase = new ArrayList<>();
+        revReseña.setLayoutManager(new LinearLayoutManager(getParentFragment().getContext()));
 
-        //addResena = root.findViewById(R.id.floatingAnadirResena); BOTON AÑADIR RESEÑA
+//        addResena = root.findViewById(R.id.floatingAnadirResena); BOTON AÑADIR RESEÑA
         mFirestore = FirebaseFirestore.getInstance();
 
         cargarResenas(); // las carga desde el firebase
-        enseñaReseña(); // enseñarlas (esto se hace asi para no tener dos veces lo mismo
-                        // al crear y cuando el usuario meta una reseña.
         // MIRAR MATERIAL.IO TIENE ICONOS
+
+        ReseñaAdapter adapter = new ReseñaAdapter(reseñasBase);
+        revReseña.setAdapter(adapter);
 
         addResena.setOnClickListener(new View.OnClickListener(){
             @Override
@@ -92,11 +111,15 @@ public class ResenaFragment extends Fragment {
      * 4- volver a enseñar el fragment con las reseñas
      */
     private void creaResena() {
+//        Intent intent = new Intent(ShowRestaurante.class, AddResenaActivity.class);
+//        intent.putExtra(RESTAURANTE, restaurante);
+//        startActivity(intent, ActivityOptions.makeSceneTransitionAnimation(this).toBundle());
     }
 
     /**
      * 1- abrir las reseñas del firestore
-     * 2- almacenarlas
+     * 2- crea un objeto reseña para cada reseña que haya en la base
+     * 3- almacena las reseñas en el listado de reseñas para ser mostradas con el adapter
      */
     private void cargarResenas() {
 
@@ -119,8 +142,9 @@ public class ResenaFragment extends Fragment {
                                 if(query.get("reseña")!=null)
                                     reseña.setReseña(query.get("reviews").toString());
                             }
+
+                            reseñasBase.add(reseña);
                         }
-                        enseñaReseña();
                     }
                 });
         while(!collection.isComplete()){
@@ -129,10 +153,25 @@ public class ResenaFragment extends Fragment {
     }
 
     /**
-     * 1- cargar las cardview
-     * 2- meter las reseñas en las cardview
+     * AQUI SE METE LO DEL RECYCLKER Y EL ADAPTER PA QUE SALGAN LAS RESEÑAS
      */
     private void enseñaReseña() {
-
+//        revReseña = (RecyclerView) findViewById(R.id.recyclerReseña);
+//        revReseña.setHasFixedSize(true);
+//
+//        //Creo un layout para el recyclerView y se lo asigno
+//        RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(getApplicationContext());
+//        revReseña.setLayoutManager(layoutManager);
+//
+//        //Añadimos la lista de los restaurantes con el adapter
+//        ReseñaAdapter lpAdapter= new ReseñaAdapter(reseñasBase,
+//                new ReseñaAdapter.OnItemClickListener() {
+//                    @Override
+//                    public void onItemClick(RestaurantePojo item) {
+//                        // si pulsas en la reseña no ocurre nada
+//                    }
+//
+//                });
+//        revReseña.setAdapter(lpAdapter);
     }
 }

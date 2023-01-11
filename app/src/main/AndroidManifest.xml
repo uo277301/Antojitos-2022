@@ -12,10 +12,12 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.MainAntojitos">
         <activity
-            android:name=".Pruebona"
+            android:name=".ShowSelectedRestaurantActivity"
             android:exported="true"
-            android:label="@string/title_activity_pruebona"
             android:theme="@style/Theme.MainAntojitos.NoActionBar" />
+        <activity
+            android:name=".AddResenaActivity"
+            android:exported="true" />
         <activity
             android:name=".RegistrarseActivity"
             android:exported="true" />

@@ -5,6 +5,8 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentTransaction;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -20,7 +22,11 @@ import com.google.android.material.appbar.CollapsingToolbarLayout;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.squareup.picasso.Picasso;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import es.uniovi.eii.mainantojitos.db.RestaurantePojo;
+import es.uniovi.eii.mainantojitos.modelo.Reseña;
 import es.uniovi.eii.mainantojitos.modelo.Restaurante;
 import es.uniovi.eii.mainantojitos.ui.CartaFragment;
 import es.uniovi.eii.mainantojitos.ui.InfoFragment2;
@@ -41,6 +47,14 @@ public class ShowRestaurante extends AppCompatActivity {
     InfoFragment2 firstFragment = new InfoFragment2();
     CartaFragment secondFragment = new CartaFragment();
     ResenaFragment thirdFragment = new ResenaFragment();
+
+
+    private List<RestaurantePojo> restaurantesBase = new ArrayList<>();
+
+    private RecyclerView revReseña;
+
+    public static final String RESTAURANTE_SELECCIONADO ="restaurante_seleccionado";
+    public static final String EMAIL_USUARIO ="email_usuario";
 
 
     @Override
@@ -77,6 +91,13 @@ public class ShowRestaurante extends AppCompatActivity {
         imagenRestaurante= (ImageView)findViewById(fotele);
         //categoria= (TextView) findViewById(R.id.categoria_res);
 
+//        revReseña = (RecyclerView) findViewById(R.id.recyclerReseña);
+//        revReseña.setHasFixedSize(true);
+//
+//        //Creo un layout para el recyclerView y se lo asigno
+//        RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(getApplicationContext());
+//        revReseña.setLayoutManager(layoutManager);
+
         loadFragmentInfo();
 
         // Si el restaurante no es null, que muestre los datos EN EL INFO FRAGMENT
@@ -86,17 +107,14 @@ public class ShowRestaurante extends AppCompatActivity {
 
     private void mostrarDatos(RestaurantePojo restaurante) {
         if (!restaurante.getName().isEmpty()) { //apertura en modo consulta
-            //Actualizar componentes con valores de la pelicula específica
-            // Imagen de fondo
             Picasso.get()
                     .load(restaurante.getImage()).into(imagenRestaurante);
-//            imagenRestaurante.setImageResource(restaurante.getImage());
 
             InfoFragment2 info = new InfoFragment2();
             Bundle args = new Bundle();
             args.putString(InfoFragment2.NOMBRE, restaurante.getName());
             args.putString(InfoFragment2.TELEFONO, restaurante.getPhone());
-            args.putString(InfoFragment2.DESCRIPCION, restaurante.getWebsite()); // NO TIENE DESCRIPCION
+            args.putString(InfoFragment2.WEB, restaurante.getWebsite());
             info.setArguments(args);
             getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, info).commit();
             CartaFragment cf = new CartaFragment();
@@ -133,13 +151,13 @@ public class ShowRestaurante extends AppCompatActivity {
 
         ResenaFragment info = new ResenaFragment();
         Bundle args = new Bundle();
+        args.putString(ResenaFragment.ID, restaurante.getId());
         args.putParcelable(ResenaFragment.RESTAURANTE, restaurante);
         info.setArguments(args);
 
         FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
         transaction.replace(R.id.fragment_container, info);
         transaction.commit();
-
     }
 
     public void loadFragmentInfo(){
@@ -148,7 +166,6 @@ public class ShowRestaurante extends AppCompatActivity {
         args.putString(InfoFragment2.NOMBRE, restaurante.getName());
         args.putString(InfoFragment2.TELEFONO, restaurante.getPhone());
         args.putString(InfoFragment2.IMAGEN, restaurante.getImage());
-//        args.putString(InfoFragment2.DESCRIPCION, restaurante.getDescripcion());
         info.setArguments(args);
 
         FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
@@ -156,16 +173,4 @@ public class ShowRestaurante extends AppCompatActivity {
         transaction.commit();
 
     }
-
-//    public void loadFragmentCarta(Fragment fragment){
-//        CartaFragment info = new CartaFragment();
-//        Bundle args = new Bundle();
-//        args.putInt(CartaFragment.IMAGENCARTA, restaurante.getImagenCarta());
-//        args.putParcelable(CartaFragment.PRUEBA, restaurante);
-//        info.setArguments(args);
-////        imagenCarta.setImageResource(restaurante.getDrawImg());
-//        FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
-//        transaction.replace(R.id.fragment_container, info);
-//        transaction.commit();
-//    }
 }

@@ -43,7 +43,8 @@
         </com.google.android.material.appbar.CollapsingToolbarLayout>
     </com.google.android.material.appbar.AppBarLayout>
 
-    <include layout="@layout/content_scrolling_botonera" />
+    <include layout="@layout/activity_show_selected_restaurant" />
+
 
 
 </androidx.coordinatorlayout.widget.CoordinatorLayout>

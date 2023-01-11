@@ -21,15 +21,30 @@ import es.uniovi.eii.mainantojitos.modelo.Reseña;
 
 public class ReseñaAdapter extends RecyclerView.Adapter<ReseñaAdapter.ReseñaViewHolder> {
 
-    public interface OnItemClickListener{
-        void onItemClick(RestaurantePojo item);
-    }
+
+
+
     private List<Reseña> listaReseña;
     private final ReseñaAdapter.OnItemClickListener listener;
 
     public ReseñaAdapter(List<Reseña> listaReseña, ReseñaAdapter.OnItemClickListener listener) {
         this.listaReseña = listaReseña;
         this.listener = listener;
+    }
+
+    public ReseñaAdapter(List<Reseña> reseñasBase) {
+        this.listaReseña = reseñasBase;
+        this.listener = new OnItemClickListener() {
+            @Override
+            public void onItemClick(Reseña item) {
+
+            }
+        };
+    }
+
+    public interface OnItemClickListener{
+        void onItemClick(Reseña item);
+
     }
 
     @NonNull
@@ -69,7 +84,6 @@ public class ReseñaAdapter extends RecyclerView.Adapter<ReseñaAdapter.ReseñaV
         // asignar valores a los componentes
         public void bindUser(final Reseña reseña, final OnItemClickListener listener) {
             nombreUsuario.setText(reseña.getEmail());
-            //cambiar a getDireccion
             reseñaUser.setText(reseña.getReseña());
             rating.setNumStars((int) reseña.getRating());
 

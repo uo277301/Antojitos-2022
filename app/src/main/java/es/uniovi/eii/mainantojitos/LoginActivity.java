@@ -21,6 +21,7 @@ import com.google.firebase.auth.FirebaseUser;
 
 public class LoginActivity extends AppCompatActivity {
 
+    private static final String EMAIL = "email";
     TextView crearCuenta;
     Button inicioiSes;
     private FirebaseAuth mAuth;
@@ -82,7 +83,7 @@ public class LoginActivity extends AppCompatActivity {
                 public void onComplete(@NonNull Task<AuthResult> task) {
                     if(task.isSuccessful()){
                         pd.dismiss();
-                        sendUserToNextActivity();
+                        sendUserToNextActivity(email);
                         Toast.makeText(LoginActivity.this, "Bienvenido!", Toast.LENGTH_SHORT).show();
                     }
                     else{
@@ -94,9 +95,10 @@ public class LoginActivity extends AppCompatActivity {
         }
     }
 
-    private void sendUserToNextActivity() {
+    private void sendUserToNextActivity(String email) {
         Intent intent = new Intent(LoginActivity.this, PantallaPrincipal.class);
         intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK|Intent.FLAG_ACTIVITY_NEW_TASK);
+        intent.putExtra(EMAIL, email);
         startActivity(intent);
     }
 

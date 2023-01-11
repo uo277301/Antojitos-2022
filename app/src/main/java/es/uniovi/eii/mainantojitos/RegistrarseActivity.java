@@ -20,6 +20,7 @@ import com.google.firebase.auth.FirebaseUser;
 
 public class RegistrarseActivity extends AppCompatActivity {
 
+    private static final String EMAIL = "email";
     TextView textViewYaHayCuenta;
     Button creaCuenta;
     FirebaseAuth mAuth;
@@ -85,7 +86,7 @@ public class RegistrarseActivity extends AppCompatActivity {
                 public void onComplete(@NonNull Task<AuthResult> task) {
                     if(task.isSuccessful()){
                         pd.dismiss();
-                        sendUserToNextActivity();
+                        sendUserToNextActivity(email);
                         Toast.makeText(RegistrarseActivity.this, "Registrado con éxito", Toast.LENGTH_SHORT).show();
                     }
                     else{
@@ -97,9 +98,10 @@ public class RegistrarseActivity extends AppCompatActivity {
         }
     }
 
-    private void sendUserToNextActivity() {
+    private void sendUserToNextActivity(String email) {
         Intent intent = new Intent(RegistrarseActivity.this, LoginActivity.class);
         intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK|Intent.FLAG_ACTIVITY_NEW_TASK);
+        intent.putExtra(EMAIL, email);
         startActivity(intent);
     }
 }

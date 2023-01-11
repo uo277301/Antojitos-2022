@@ -35,16 +35,22 @@ public class PantallaPrincipal extends AppCompatActivity {
     private int[] cartas = {R.drawable.terraterra,R.drawable.mesonasturcon_carta,R.drawable.terrasgallegas_carta
             ,R.drawable.casamarcial_carta,R.drawable.casatrabanco_carta,R.drawable.casamarcial_carta};
     public static final String RESTAURANTE_SELECCIONADO ="restaurante_seleccionado";
+    public static final String EMAIL ="email";
 
 
     //Cambios Restaurantes-Sprint3
     FirebaseFirestore mFirestore;
     private List<RestaurantePojo> restaurantesBase = new ArrayList<>();
 
+    String email;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_pantalla_principal);
+
+        Intent intentRes= getIntent();
+        email = intentRes.getParcelableExtra(PantallaPrincipal.EMAIL);
 
         //Rellenamos el recyclerView con varios restaurantes
         //rellenarLista();
@@ -88,11 +94,11 @@ public class PantallaPrincipal extends AppCompatActivity {
         Log.i("Click adapter","Item Clicked "+restaurante.getName());
         //Toast.makeText(MainActivity.this, "Item Clicked "+user.getId(), Toast.LENGTH_LONG).show();
 
-        //Seria la parte de MIGUEL
         //Paso el modo de apertura
-        Intent intent=new Intent (PantallaPrincipal.this, ShowRestaurante.class);
+        Intent intent=new Intent (PantallaPrincipal.this, ShowSelectedRestaurantActivity.class);
 //        intent.putExtra(RESTAURANTE_SELECCIONADO, restaurante);
         intent.putExtra(RESTAURANTE_SELECCIONADO, restaurante);
+        intent.putExtra(EMAIL, email);
         //Añadimos una transicion entre las actvities con un barrido
         startActivity(intent, ActivityOptions.makeSceneTransitionAnimation(this).toBundle());
     }
@@ -103,14 +109,16 @@ public class PantallaPrincipal extends AppCompatActivity {
      * Lee lista de restaurantes desde el fichero csv en assets
      * Crea restaurantes como un ArrayList<Restaurante>
      */
-
-
     //Cambios Restaurantes-Sprint3
     private void cargarRestaurantesFirebase(){
+
         Task<QuerySnapshot> collection =
                 mFirestore.collection("restaurantes").get().addOnSuccessListener(new OnSuccessListener<QuerySnapshot>(){
                     @Override
                     public void onSuccess(QuerySnapshot queryDocumentSnapshots) {
+                        if(restaurantesBase.size() > 100){
+                            return;
+                        }
                         RestaurantePojo restaurante;
                         for(QueryDocumentSnapshot query: queryDocumentSnapshots) {
                             restaurante = new RestaurantePojo();
@@ -143,9 +151,9 @@ public class PantallaPrincipal extends AppCompatActivity {
                         }
                     }
                 });
-        while(!collection.isComplete()){
+        while(!collection.isComplete() && restaurantesBase.size() < 10){
 
         }
-
     }
+
 }

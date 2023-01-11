@@ -1,9 +1,14 @@
 package es.uniovi.eii.mainantojitos.ui;
 
+import android.content.Intent;
+import android.graphics.Color;
+import android.net.Uri;
 import android.os.Bundle;
+import android.text.method.LinkMovementMethod;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -18,8 +23,9 @@ public class InfoFragment2 extends Fragment {
 
     public static final String NOMBRE="nombre";
     public static final String TELEFONO="telefono";
-    public static final String DESCRIPCION="descripcion";
+    public static final String WEB="web";
     public static final String IMAGEN="imagen";
+    private String web;
 
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
@@ -28,19 +34,31 @@ public class InfoFragment2 extends Fragment {
 
         //Referencias componentes
         final TextView tNombre = root.findViewById(R.id.textViewNombreRestaurante);
-        final TextView tDescripcion = root.findViewById(R.id.textViewDescripcion);
         final TextView tTelefono =root.findViewById(R.id.textViewTelefono);
+        final Button tWeb =root.findViewById(R.id.button_web);
 //        ImageView imagen = root.findViewById((R.id.imagenviewfotorestaurante));
 
         Bundle args=getArguments();
         if (args!=null) {
             tNombre.setText(args.getString(NOMBRE));
             tTelefono.setText(args.getString(TELEFONO));
-            tDescripcion.setText((args.getString(DESCRIPCION)));
+            web = args.getString(WEB);
+
+            // BOTON DE IR A WEB TE MANDA A LA WEB DEL RESTAURANTE
+            tWeb.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    Uri url = Uri.parse(web);
+                    Intent launchBrowser = new Intent(Intent.ACTION_VIEW, url);
+                    startActivity(launchBrowser);
+                }
+            });
 //            Picasso.get()
 //                    .load(args.getString(IMAGEN)).into(imagen);
         }
 
+
         return root;
     }
+
 }

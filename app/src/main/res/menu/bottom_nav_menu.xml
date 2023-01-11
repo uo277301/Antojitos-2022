@@ -5,9 +5,6 @@
     <item
         android:id="@+id/navigation_info"
         android:title="INFORMACIÓN" />
-    <item
-        android:id="@+id/navigation_carta"
-        android:title="CARTA" />
 
     <item
         android:id="@+id/navigation_reseñas"

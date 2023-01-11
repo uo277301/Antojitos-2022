@@ -7,49 +7,15 @@
     tools:context=".ui.ResenaFragment">
 
 
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:orientation="vertical">
-
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="198dp"
-            android:orientation="vertical"
-            android:padding="8dp">
-
-            <ImageView
-                android:id="@+id/imagenFotoPerfil"
-                android:layout_width="44dp"
-                android:layout_height="44dp"
-                app:srcCompat="@android:drawable/ic_menu_myplaces" />
-
-            <TextView
-                android:id="@+id/txt_nombre_usuario"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="miguelmierc@gmail.com"
-                android:textColor="@android:color/black"
-                android:textSize="20sp" />
-
-            <RatingBar
-                android:id="@+id/ratingBar_reseña"
-                style="@style/Widget.AppCompat.RatingBar.Small"
-                android:layout_width="104dp"
-                android:layout_height="31dp" />
-
-            <EditText
-                android:id="@+id/textoReseñaCliente"
-                android:layout_width="match_parent"
-                android:layout_height="109dp"
-                android:ems="10"
-                android:gravity="start|top"
-                android:inputType="textMultiLine" />
-
-        </LinearLayout>
-
-
-    </LinearLayout>
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/recyclerReseña"
+        android:layout_width="407dp"
+        android:layout_height="732dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.0"/>
 
 
 
