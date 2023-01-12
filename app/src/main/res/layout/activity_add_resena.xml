@@ -4,6 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:backgroundTint="@color/teal_200"
     tools:context=".AddResenaActivity">
 
     <com.google.android.material.textfield.TextInputLayout
@@ -29,20 +30,26 @@
         android:id="@+id/button_añadir"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginEnd="28dp"
+        android:layout_marginBottom="28dp"
         android:text="AÑADIR"
-        tools:ignore="MissingConstraints"
-        tools:layout_editor_absoluteX="192dp"
-        tools:layout_editor_absoluteY="667dp" />
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        tools:ignore="MissingConstraints" />
 
     <Button
         android:id="@+id/button_cancelar"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginEnd="32dp"
+        android:layout_marginEnd="48dp"
+        android:layout_marginBottom="28dp"
         android:text="CANCELAR"
+        app:iconTint="@color/teal_700"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toStartOf="@+id/button_añadir"
-        tools:ignore="MissingConstraints"
-        tools:layout_editor_absoluteY="653dp" />
+        app:layout_constraintHorizontal_bias="1.0"
+        app:layout_constraintStart_toStartOf="parent"
+        tools:ignore="MissingConstraints" />
 
     <RatingBar
         android:id="@+id/ratingBar_puntuacion"

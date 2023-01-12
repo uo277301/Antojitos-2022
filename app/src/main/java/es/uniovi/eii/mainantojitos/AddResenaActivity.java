@@ -3,8 +3,11 @@ package es.uniovi.eii.mainantojitos;
 import static android.content.ContentValues.TAG;
 
 import androidx.annotation.NonNull;
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.app.ProgressDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
@@ -50,6 +53,8 @@ public class AddResenaActivity extends AppCompatActivity {
 
     FirebaseFirestore mFirestore;
 
+    private static final String RESTAURANTE = "res";
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -77,24 +82,6 @@ public class AddResenaActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 añadeReseña();
-
-//                String email = correoUsuario;
-//                String textoReseña = editTextReseña.getText().toString();
-//                String idRestaurante = restaurante.getId();
-//
-////        Reseña reseñaAñadir = new Reseña(idRestaurante, email, textoReseña, rating);
-//
-//                if(textoReseña.isEmpty()){
-//                    editTextReseña.setError("Introduzca una reseña");
-//                }
-//
-//                Map<String, Object> res = new HashMap<>();
-//                res.put("email", email);
-//                res.put("id", idRestaurante);
-//                res.put("rating", puntuacionUsuario);
-//                res.put("reseña", textoReseña);
-//
-//                mFirestore.
             }
         });
 
@@ -125,8 +112,25 @@ public class AddResenaActivity extends AppCompatActivity {
      * MANDA DE VUELTA A LA PANTALLA DEL RESTAURANTE
      */
     private void volverPantallaRestaurante() {
-        Intent intent = new Intent(AddResenaActivity.this, ShowRestaurante.class);
-        startActivity(intent);
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setCancelable(true);
+        builder.setTitle("Cancelar reseña");
+        builder.setMessage("¿Seguro que quieres cancelar la reseña?");
+        builder.setPositiveButton("Confirmar",
+                new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        onBackPressed();
+                    }
+                });
+        builder.setNegativeButton("Cancelar", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+            }
+        });
+
+        AlertDialog dialog = builder.create();
+        dialog.show();
     }
 
 
@@ -151,19 +155,41 @@ public class AddResenaActivity extends AppCompatActivity {
         res.put("rating", String.valueOf(puntuacionUsuario));
         res.put("reseña", textoReseña);
 
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setCancelable(true);
+        builder.setTitle("Confirmar reseña");
+        builder.setMessage("¿Quieres publicar esta reseña?");
+        builder.setPositiveButton("Confirmar", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                ProgressDialog dialog2 = ProgressDialog.show(AddResenaActivity.this, "Subiendo reseña",
+                        "Cargando. Por favor espere...", true);
 
-        Task<Void> collection =
-                mFirestore.collection("reseñas").document(UUID.randomUUID().toString()).set(res).addOnSuccessListener(new OnSuccessListener<Void>() {
-                    @Override
-                    public void onSuccess(Void aVoid) {
-                        Log.d(TAG, "Reseña guardada con éxito!");
-                        volverPantallaRestaurante();
-                    }
-                }).addOnFailureListener(new OnFailureListener() {
-                    @Override
-                    public void onFailure(@NonNull Exception e) {
-                        Log.w(TAG, "Error añadiendo la reseña, por favor pruebe de nuevo...", e);
-                    }
-                });
+                Task<Void> collection =
+                        mFirestore.collection("reseñas").document(UUID.randomUUID().toString()).set(res).addOnSuccessListener(new OnSuccessListener<Void>() {
+                            @Override
+                            public void onSuccess(Void aVoid) {
+                                Log.d(TAG, "Reseña guardada con éxito!");
+                            }
+                        }).addOnFailureListener(new OnFailureListener() {
+                            @Override
+                            public void onFailure(@NonNull Exception e) {
+                                Log.w(TAG, "Error añadiendo la reseña, por favor pruebe de nuevo...", e);
+                            }
+                        });
+
+                onBackPressed();
+            }
+        });
+        builder.setNegativeButton("Cancelar", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+            }
+        });
+
+        AlertDialog dialog = builder.create();
+        dialog.show();
+
     }
+
 }

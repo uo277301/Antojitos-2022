@@ -86,7 +86,7 @@ public class ReseñaAdapter extends RecyclerView.Adapter<ReseñaAdapter.ReseñaV
         public void bindUser(final Reseña reseña, final OnItemClickListener listener) {
             nombreUsuario.setText(reseña.getEmail());
             reseñaUser.setText(reseña.getReseña());
-            rating.setRating((float) reseña.getRating());
+            rating.setRating(reseña.getRating());
 
         }
     }

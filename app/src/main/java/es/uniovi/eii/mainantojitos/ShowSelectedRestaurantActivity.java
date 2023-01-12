@@ -21,6 +21,7 @@ import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
+import android.widget.RatingBar;
 import android.widget.TextView;
 
 import androidx.navigation.NavController;
@@ -51,6 +52,7 @@ public class ShowSelectedRestaurantActivity extends AppCompatActivity {
     ImageView imagenRestaurante;
     TextView nombre;
     TextView telefono;
+    RatingBar rating;
     FloatingActionButton añadeReseña;
     String web;
     CollapsingToolbarLayout toolBarLayout;
@@ -75,22 +77,19 @@ public class ShowSelectedRestaurantActivity extends AppCompatActivity {
 
         // INICIALIZACION
         Intent intentRes= getIntent();
-        restaurante = intentRes.getParcelableExtra(PantallaPrincipal.RESTAURANTE_SELECCIONADO);
+        restaurante = intentRes.getParcelableExtra(RESTAURANTE_SELECCIONADO);
+        mFirestore = FirebaseFirestore.getInstance();
+
         email = intentRes.getParcelableExtra(PantallaPrincipal.EMAIL);
         toolBarLayout = (CollapsingToolbarLayout) findViewById(R.id.toolbar_layout);
         telefono= (TextView)findViewById(R.id.textViewTelefono);
         nombre= (TextView)findViewById(R.id.textViewNombreRestaurante);
         añadeReseña = (FloatingActionButton) findViewById(R.id.floating_button_añadir_reseña);
-        mFirestore = FirebaseFirestore.getInstance();
-
-
-        int fotoRestaurante = R.id.imagen_restaurante_info;
-        Log.i("Foto","Foto: " + fotoRestaurante);
-        imagenRestaurante= (ImageView)findViewById(fotoRestaurante);
-        Picasso.get()
-                .load(restaurante.getImage()).into(imagenRestaurante);
+        imagenRestaurante= (ImageView)findViewById(R.id.imagen_restaurante_info);
 
         // CARGAR LOS DATOS DEL RESTAURANTE Y EL RECYCLER CON LAS RESEÑAS
+        Picasso.get()
+                .load(restaurante.getImage()).into(imagenRestaurante);
         cargarDatosRestaurante();
         cargarResenas();
 
@@ -112,9 +111,15 @@ public class ShowSelectedRestaurantActivity extends AppCompatActivity {
                 });
         revReseña.setAdapter(lpAdapter);
 
-//
-//        ReseñaAdapter adapter = new ReseñaAdapter(reseñasBase);
-//        revReseña.setAdapter(adapter);
+        // En caso de que haya teléfono, se puede pulsar para ir al dial y llamar
+        if(telefono.length() > 2) {
+            telefono.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    dialPhoneNumber(restaurante.getPhone());
+                }
+            });
+        }
 
         // BOTON AÑADIR
         añadeReseña.setOnClickListener(new View.OnClickListener() {
@@ -126,6 +131,9 @@ public class ShowSelectedRestaurantActivity extends AppCompatActivity {
 
     }
 
+    /**
+     * Cuando se pulsa el boton flotante te manda a la pantalla de añadir una reseña
+     */
     private void cambiaPestañaAñadirReseña() {
         Intent intent = new Intent(ShowSelectedRestaurantActivity.this, AddResenaActivity.class);
         intent.putExtra(RESTAURANTE_SELECCIONADO, restaurante);
@@ -142,13 +150,16 @@ public class ShowSelectedRestaurantActivity extends AppCompatActivity {
     }
 
 
+    /**
+     * Almacena en cada elemento los valores del restaurante
+     * Luego se prepara el boton que te manda a la web del restaurante
+     */
     private void cargarDatosRestaurante() {
-        final TextView tNombre = findViewById(R.id.textViewNombreRestaurante);
-        final TextView tTelefono =findViewById(R.id.textViewTelefono);
         final Button tWeb =findViewById(R.id.button_web);
 
-        tNombre.setText(restaurante.getName());
-        tTelefono.setText(restaurante.getPhone());
+        nombre.setText(restaurante.getName());
+        telefono.setText(restaurante.getPhone());
+
 
         // FUNCIONALIDAD BOTON DE IR A LA WEB
         web = restaurante.getWebUrl();
@@ -160,6 +171,14 @@ public class ShowSelectedRestaurantActivity extends AppCompatActivity {
                 startActivity(launchBrowser);
             }
         });
+    }
+
+    public void dialPhoneNumber(String phoneNumber) {
+        Intent intent = new Intent(Intent.ACTION_DIAL);
+        intent.setData(Uri.parse("tel:" + phoneNumber));
+        if (intent.resolveActivity(getPackageManager()) != null) {
+            startActivity(intent);
+        }
     }
 
     /**
@@ -179,9 +198,6 @@ public class ShowSelectedRestaurantActivity extends AppCompatActivity {
 
                             // Comprobacion de que se enseñen solo las reseñas del restaurante que queremos
                             String aux = query.get("id").toString();
-                            Log.d("AUX", aux + "!!!!!!!!!!!!!!!!!!!!!!!!!");
-                            Log.d("id", restaurante.getId() + "!!!!!!!!!!!!!!!!!!!!!!!!!");
-
                             if(aux!=null && aux.equals(restaurante.getId())){
                                 reseña.setId(query.get("id").toString());
                                 if(query.get("email")!=null)
@@ -191,12 +207,13 @@ public class ShowSelectedRestaurantActivity extends AppCompatActivity {
                                 if(query.get("reseña")!=null)
                                     reseña.setReseña(query.get("reseña").toString());
                             }
-                            Log.d("RESEÑA A AÑADIR",reseña.getReseña()+" --> se añade o que");
+                            Log.d("RESEÑA A AÑADIR",reseña.getReseña()+" --> se tiene que añadir");
                             if(reseña.getId() != null){
                                 reseñasBase.add(reseña);
                             }
-                            Log.d("RESEÑA AÑADIDA",reseñasBase.get(0) +" --> se añade o que");
-
+                            if(reseñasBase.size() != 0) {
+                                Log.d("RESEÑA AÑADIDA", reseñasBase.get(0) + " --> se añade bien");
+                            }
                         }
                     }
                 });

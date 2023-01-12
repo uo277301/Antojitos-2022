@@ -5,9 +5,9 @@ public class Reseña {
     private String id;
     private String email;
     private String reseña;
-    private double rating;
+    private float rating;
 
-    public Reseña(String id, String email, String reseña, double rating) {
+    public Reseña(String id, String email, String reseña, float rating) {
         this.id = id;
         this.email = email;
         this.reseña = reseña;
@@ -42,11 +42,11 @@ public class Reseña {
         this.reseña = reseña;
     }
 
-    public double getRating() {
+    public float getRating() {
         return rating;
     }
 
-    public void setRating(double rating) {
+    public void setRating(float rating) {
         this.rating = rating;
     }
 }

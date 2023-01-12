@@ -45,7 +45,9 @@
                 android:id="@+id/ratingBar_reseña"
                 style="@style/Widget.AppCompat.RatingBar.Small"
                 android:layout_width="wrap_content"
-                android:layout_height="wrap_content" />
+                android:layout_height="wrap_content"
+                android:progressTint="#FFEB3B"
+                />
 
         </LinearLayout>
 

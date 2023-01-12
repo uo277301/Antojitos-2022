@@ -83,10 +83,9 @@ public class ListaRestaurantesAdapter extends RecyclerView.Adapter<ListaRestaura
         // asignar valores a los componentes
         public void bindUser(final RestaurantePojo restaurante, final OnItemClickListener listener) {
             nombreRestaurante.setText(restaurante.getName());
-            //cambiar a getDireccion
             direccion.setText(restaurante.getAddress());
-            //Lo mismo con rating
-            //descripcion.setText(restaurante.getDescripcion());
+            rating.setRating(restaurante.getRating());
+
             if(restaurante.getImage()!=null || restaurante.getImage()==""){
                 Picasso.get()
                         .load(restaurante.getImage()).into(imagen);

@@ -4,6 +4,11 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     xmlns:tools="http://schemas.android.com/tools"
+    android:focusable="true"
+    app:strokeWidth="1dp"
+    app:cardElevation="0dp"
+    android:color="?attr/colorPrimary"
+    android:state_checked="true"
     tools:context=".ui.ResenaFragment">
 
 
@@ -36,7 +41,9 @@
                 android:id="@+id/ratingBar_reseña"
                 style="@style/Widget.AppCompat.RatingBar.Small"
                 android:layout_width="104dp"
-                android:layout_height="31dp" />
+                android:layout_height="31dp"
+                android:progressTint="#FFEB3B"
+                 />
 
             <TextView
                 android:id="@+id/textoReseñaCliente"
