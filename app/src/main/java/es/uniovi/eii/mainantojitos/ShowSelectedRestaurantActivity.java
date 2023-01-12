@@ -9,7 +9,7 @@ import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.android.material.appbar.CollapsingToolbarLayout;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
-import com.google.android.material.snackbar.Snackbar;
+import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
@@ -18,28 +18,26 @@ import com.squareup.picasso.Picasso;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.util.Log;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.RatingBar;
 import android.widget.TextView;
 
-import androidx.navigation.NavController;
-import androidx.navigation.Navigation;
 import androidx.navigation.ui.AppBarConfiguration;
-import androidx.navigation.ui.NavigationUI;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import java.util.ArrayList;
 import java.util.List;
 
+import es.uniovi.eii.mainantojitos.adapter.ReseñaAdapter;
 import es.uniovi.eii.mainantojitos.databinding.ActivityShowSelectedRestaurantBinding;
 import es.uniovi.eii.mainantojitos.db.RestaurantePojo;
 import es.uniovi.eii.mainantojitos.modelo.Reseña;
-import es.uniovi.eii.mainantojitos.ui.CartaFragment;
-import es.uniovi.eii.mainantojitos.ui.InfoFragment2;
-import es.uniovi.eii.mainantojitos.ui.ResenaFragment;
 
 public class ShowSelectedRestaurantActivity extends AppCompatActivity {
 
@@ -57,6 +55,7 @@ public class ShowSelectedRestaurantActivity extends AppCompatActivity {
     String web;
     CollapsingToolbarLayout toolBarLayout;
     String email;
+    String latitude, longitude;
 
     private List<RestaurantePojo> restaurantesBase = new ArrayList<>();
     private List<Reseña> reseñasBase = new ArrayList<>();
@@ -86,6 +85,7 @@ public class ShowSelectedRestaurantActivity extends AppCompatActivity {
         nombre= (TextView)findViewById(R.id.textViewNombreRestaurante);
         añadeReseña = (FloatingActionButton) findViewById(R.id.floating_button_añadir_reseña);
         imagenRestaurante= (ImageView)findViewById(R.id.imagen_restaurante_info);
+        rating = (RatingBar) findViewById(R.id.ratingBar_reseña);
 
         // CARGAR LOS DATOS DEL RESTAURANTE Y EL RECYCLER CON LAS RESEÑAS
         Picasso.get()
@@ -156,10 +156,10 @@ public class ShowSelectedRestaurantActivity extends AppCompatActivity {
      */
     private void cargarDatosRestaurante() {
         final Button tWeb =findViewById(R.id.button_web);
+        final Button tMap =findViewById(R.id.button_googlemaps);
 
         nombre.setText(restaurante.getName());
         telefono.setText(restaurante.getPhone());
-
 
         // FUNCIONALIDAD BOTON DE IR A LA WEB
         web = restaurante.getWebUrl();
@@ -169,6 +169,20 @@ public class ShowSelectedRestaurantActivity extends AppCompatActivity {
                 Uri url = Uri.parse(web);
                 Intent launchBrowser = new Intent(Intent.ACTION_VIEW, url);
                 startActivity(launchBrowser);
+            }
+        });
+
+        longitude = restaurante.getLongitude();
+        latitude = restaurante.getLatitude();
+        tMap.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Uri gmmIntentUri = Uri.parse("geo:"+latitude+","+longitude);
+                Intent mapIntent = new Intent(Intent.ACTION_VIEW, gmmIntentUri);
+                mapIntent.setPackage("com.google.android.apps.maps");
+                if (mapIntent.resolveActivity(getPackageManager()) != null) {
+                    startActivity(mapIntent);
+                }
             }
         });
     }

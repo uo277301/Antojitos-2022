@@ -1,32 +1,36 @@
 package es.uniovi.eii.mainantojitos;
 
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import android.app.ActivityOptions;
+import android.app.ProgressDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
-import android.util.LogPrinter;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
+import android.view.View;
+import android.widget.Button;
+import android.widget.EditText;
 
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 
+import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
 
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.List;
 
+import es.uniovi.eii.mainantojitos.adapter.ListaRestaurantesAdapter;
 import es.uniovi.eii.mainantojitos.db.RestaurantePojo;
-import es.uniovi.eii.mainantojitos.modelo.Categoria;
-import es.uniovi.eii.mainantojitos.modelo.Restaurante;
 
 public class PantallaPrincipal extends AppCompatActivity {
     private RecyclerView rvPrincipal;
@@ -41,7 +45,6 @@ public class PantallaPrincipal extends AppCompatActivity {
     //Cambios Restaurantes-Sprint3
     FirebaseFirestore mFirestore;
     private List<RestaurantePojo> restaurantesBase = new ArrayList<>();
-
     String email;
 
     @Override
@@ -57,6 +60,8 @@ public class PantallaPrincipal extends AppCompatActivity {
 
         //Cambios Restaurantes-Sprint3
         //cargarRestaurantes();
+
+        initFiltros();
         mFirestore = FirebaseFirestore.getInstance();
         cargarRestaurantesFirebase();
 
@@ -86,8 +91,29 @@ public class PantallaPrincipal extends AppCompatActivity {
                     }
                 });
         rvPrincipal.setAdapter(lpAdapter);
+
     }
 
+
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        MenuInflater inflater = getMenuInflater();
+        inflater.inflate(R.menu.logout_menu, menu);
+        return super.onCreateOptionsMenu(menu);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        int id = item.getItemId();
+        if (id == R.id.action_logout) {
+            FirebaseAuth.getInstance().signOut();
+            Intent intent=new Intent (PantallaPrincipal.this, LoginActivity.class);
+            startActivity(intent, ActivityOptions.makeSceneTransitionAnimation(this).toBundle());
+            return true;
+        }
+        return super.onOptionsItemSelected(item);
+    }
 
     public void clickonItem (RestaurantePojo restaurante){
         Log.i("Click adapter","Item Clicked "+restaurante.getName());
@@ -118,6 +144,11 @@ public class PantallaPrincipal extends AppCompatActivity {
                         RestaurantePojo restaurante;
                         for(QueryDocumentSnapshot query: queryDocumentSnapshots) {
                             restaurante = new RestaurantePojo();
+                            ArrayList<String> res= (ArrayList<String>) query.get("cuisine");
+                            String[] array=new String[res.size()];
+                            array=res.toArray(array);
+
+//                            System.out.println(res);
                             if(query.get("id")!=null)
                                 restaurante.setId(query.get("id").toString());
                             if(query.get("name")!=null)
@@ -142,14 +173,201 @@ public class PantallaPrincipal extends AppCompatActivity {
                                 restaurante.setWebUrl(query.get("webUrl").toString());
                             if(query.get("website")!=null)
                                 restaurante.setWebsite(query.get("website").toString());
+                            if(query.get("cuisine")!=null)
+                                restaurante.setCuisine(array);
+
                             restaurantesBase.add(restaurante);
                             Log.d("Procesados hasta ahora:",""+restaurantesBase.size());
                         }
                     }
                 });
-        while(!collection.isComplete()){
+        while(!collection.isComplete() && restaurantesBase.size()<151){
 
         }
+
+
     }
 
+    private void initFiltros(){
+        EditText seleccionFiltro=findViewById(R.id.editTextSeleccionaFiltro);
+        Button botonFiltrar=findViewById(R.id.buttonFiltrar);
+
+        seleccionFiltro.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                AlertDialog.Builder builder = new AlertDialog.Builder(PantallaPrincipal.this);
+                builder.setTitle("Selecciona la opcion de filtrado")
+                        .setItems(R.array.Filtros, new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface dialog, int which) {
+                                //empieza en 0;
+                                if(which==0){
+                                    seleccionFiltro.setText("Restaurante de carnes");
+//                                    filtrarCocinaCarnes();
+                                }else if(which==1){
+                                    seleccionFiltro.setText("Cocina Mediterránea");
+//                                    filtrarCocinaMediterranea();
+                                }else if(which==2){
+                                    seleccionFiltro.setText("Cocina Italiana");
+//                                    filtrarCocinaItaliana();
+                                }else if(which==3){
+                                    seleccionFiltro.setText("Vinoteca");
+//                                    filtrarCocinaJaponesa();
+                                }else if(which==4){
+                                    seleccionFiltro.setText("Cocina Mexicana");
+//                                    filtrarCocinaMexicana();
+                                }else if(which==5){
+                                    seleccionFiltro.setText("Por precio (descendente)");
+//                                    filtrarValoracion();
+                                }else if(which==6){
+                                    seleccionFiltro.setText("Por precio (ascendente)");
+//                                  filtrarOpcionesVegetarianas();
+                                }else if(which==7){
+                                    seleccionFiltro.setText("Opciones vegetarianas");
+                                }else
+                                    seleccionFiltro.setText("Selecciona la opcion de filtrado");
+
+                            }
+                        });
+
+                builder.show();
+
+            }
+        });
+        botonFiltrar.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if(seleccionFiltro.getText().toString().equals("Restaurante de carnes")){
+                    filtrarCocinaCarnes();
+                }else if (seleccionFiltro.getText().toString().equals("Cocina Mediterránea")){
+                    filtrarCocinaMediterranea();
+                }else if(seleccionFiltro.getText().toString().equals("Cocina Italiana")){
+                    filtrarCocinaItaliana();
+                }else if(seleccionFiltro.getText().toString().equals("Vinoteca")){
+                    filtrarVinoteca();
+                }else if(seleccionFiltro.getText().toString().equals("Cocina Mexicana")){
+                    filtrarCocinaMexicana();
+                }else if(seleccionFiltro.getText().toString().equals("Por precio (descendente)")){
+                    filtrarPrecioDescendente();
+                }else if(seleccionFiltro.getText().toString().equals("Opciones vegetarianas")){
+                    filtrarOpcionesVegetarianas();
+                }else if(seleccionFiltro.getText().toString().equals("Por precio (ascendente)"))
+                    filtrarPrecioAscendente();
+                else{
+                    eliminarFiltros();
+                }
+
+            }
+        });
+    }
+
+    private void filtrarCocinaCarnes(){
+        List<RestaurantePojo> filtrados = new ArrayList<>();
+        for(RestaurantePojo res: restaurantesBase){
+            for(String cocina:res.getCuisine()){
+                if(cocina.equals("Restaurante de carne")){
+                    filtrados.add(res);
+                }
+            }
+        }
+        actualizarPantalla(filtrados);
+    }
+    private void filtrarCocinaMediterranea(){
+        List<RestaurantePojo> filtrados = new ArrayList<>();
+        for(RestaurantePojo res: restaurantesBase){
+            for(String cocina:res.getCuisine()){
+                if(cocina.equals("Mediterránea") || cocina.equals("Marisco")){
+                    filtrados.add(res);
+                }
+            }
+        }
+        actualizarPantalla(filtrados);
+    }
+    private void filtrarCocinaItaliana(){
+        List<RestaurantePojo> filtrados = new ArrayList<>();
+        for(RestaurantePojo res: restaurantesBase){
+            for(String cocina:res.getCuisine()){
+                if(cocina.equals("Italiana")){
+                    filtrados.add(res);
+                }
+            }
+        }
+        actualizarPantalla(filtrados);
+    }
+    private void filtrarVinoteca(){
+        List<RestaurantePojo> filtrados = new ArrayList<>();
+        for(RestaurantePojo res: restaurantesBase){
+            for(String cocina:res.getCuisine()){
+                if(cocina.equals("Vinoteca")|| cocina.equals("Bar")){
+                    filtrados.add(res);
+                }
+            }
+        }
+        actualizarPantalla(filtrados);
+    }
+    private void filtrarCocinaMexicana(){
+        List<RestaurantePojo> filtrados = new ArrayList<>();
+        for(RestaurantePojo res: restaurantesBase){
+            for(String cocina:res.getCuisine()){
+                if(cocina.equals("Mexicana")|| cocina.equals("Latina")){
+                    filtrados.add(res);
+                }
+            }
+        }
+        actualizarPantalla(filtrados);
+    }
+
+
+    private void filtrarPrecioAscendente(){
+        List<RestaurantePojo> filtrados=new ArrayList<>();
+        String[] prices = {"€","€ - €€", "€€ - €€€","€€€ - €€€€","€€€€"};
+        for(String price:prices){
+            for(RestaurantePojo rest: restaurantesBase){
+                if(rest.getPriceLevel()!=null && rest.getPriceLevel().equals(price)){
+                    filtrados.add(rest);
+                }
+            }
+        }
+        actualizarPantalla(filtrados);
+    }
+
+    private void filtrarPrecioDescendente(){
+        List<RestaurantePojo> filtrados=new ArrayList<>();
+        String[] prices = { "€€€€","€€€ - €€€€","€€ - €€€","€ - €€","€"};
+        for(String price:prices){
+            for(RestaurantePojo rest: restaurantesBase){
+                if(rest.getPriceLevel()!=null && rest.getPriceLevel().equals(price)){
+                    filtrados.add(rest);
+                }
+            }
+        }
+        actualizarPantalla(filtrados);
+    }
+    private void filtrarOpcionesVegetarianas(){
+        List<RestaurantePojo> filtrados = new ArrayList<>();
+        for(RestaurantePojo res: restaurantesBase){
+            for(String cocina:res.getCuisine()){
+                if(cocina.equals("Opciones vegetarianas")){
+                    filtrados.add(res);
+                }
+            }
+        }
+        actualizarPantalla(filtrados);
+    }
+    private void eliminarFiltros(){
+        actualizarPantalla(restaurantesBase);
+    }
+
+    private void actualizarPantalla(List<RestaurantePojo> restaurantes) {
+        ListaRestaurantesAdapter lpAdapter= new ListaRestaurantesAdapter(restaurantes,
+                new ListaRestaurantesAdapter.OnItemClickListener() {
+                    @Override
+                    public void onItemClick(RestaurantePojo restaurante) {
+                        // Esta seria la parte de michu de que ocurre al pulsar sobre un
+                        // restaurante
+                        clickonItem(restaurante);
+                        //Log.println(Log.INFO,"","Restaurante pulsado");
+                    }
+                });
+        rvPrincipal.setAdapter(lpAdapter);
+    }
 }

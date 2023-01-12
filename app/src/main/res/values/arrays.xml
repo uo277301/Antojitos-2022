@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <array name="Filtros">
+        <item>Restaurante de carnes</item>
+        <item>Cocina Mediterránea</item>
+        <item>Cocina Italiana</item>
+        <item>Vinoteca</item>
+        <item>Cocina Mexicana</item>
+        <item>Por precio (descendente)</item>
+        <item>Por precio (ascendente)</item>
+        <item>Opciones vegetarianas</item>
+        <item>Eliminar Filtros</item>
+
+    </array>
+</resources>

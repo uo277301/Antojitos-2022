@@ -35,9 +35,6 @@
             android:name=".LoginActivity"
             android:exported="true" />
         <activity
-            android:name=".ShowRestaurante"
-            android:exported="true" />
-        <activity
             android:name=".PantallaPrincipal"
             android:exported="true" />
 

@@ -62,7 +62,7 @@ public class AddResenaActivity extends AppCompatActivity {
         setContentView(R.layout.activity_add_resena);
 
         Intent intentRes = getIntent();
-        restaurante = intentRes.getParcelableExtra(ShowRestaurante.RESTAURANTE_SELECCIONADO);
+        restaurante = intentRes.getParcelableExtra(ShowSelectedRestaurantActivity.RESTAURANTE_SELECCIONADO);
         correoUsuario = intentRes.getParcelableExtra(ShowSelectedRestaurantActivity.EMAIL_USUARIO);
 
         nombreRestaurante = (TextView) findViewById(R.id.textView_nombre_restaurante);

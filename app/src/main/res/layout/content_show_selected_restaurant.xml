@@ -9,7 +9,7 @@
     app:cardElevation="0dp"
     android:color="?attr/colorPrimary"
     android:state_checked="true"
-    tools:context=".ui.ResenaFragment">
+    >
 
 
     <LinearLayout
@@ -38,10 +38,10 @@
                 android:textSize="20sp" />
 
             <RatingBar
-                android:id="@+id/ratingBar_reseña"
+                android:id="@+id/ratingBarResena"
                 style="@style/Widget.AppCompat.RatingBar.Small"
-                android:layout_width="104dp"
-                android:layout_height="31dp"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
                 android:progressTint="#FFEB3B"
                  />
 

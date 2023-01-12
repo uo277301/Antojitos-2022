@@ -1,6 +1,7 @@
 package es.uniovi.eii.mainantojitos;
 
 import android.content.Context;
+import android.widget.EditText;
 
 import androidx.test.platform.app.InstrumentationRegistry;
 import androidx.test.ext.junit.runners.AndroidJUnit4;
@@ -22,5 +23,7 @@ public class ExampleInstrumentedTest {
         // Context of the app under test.
         Context appContext = InstrumentationRegistry.getInstrumentation().getTargetContext();
         assertEquals("es.uniovi.eii.mainantojitos", appContext.getPackageName());
+        LoginActivity log = new LoginActivity();
+
     }
 }

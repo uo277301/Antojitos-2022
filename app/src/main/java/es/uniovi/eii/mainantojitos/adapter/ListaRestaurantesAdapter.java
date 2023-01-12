@@ -1,4 +1,4 @@
-package es.uniovi.eii.mainantojitos;
+package es.uniovi.eii.mainantojitos.adapter;
 
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -15,6 +15,7 @@ import com.squareup.picasso.Picasso;
 
 import java.util.List;
 
+import es.uniovi.eii.mainantojitos.R;
 import es.uniovi.eii.mainantojitos.db.RestaurantePojo;
 
 public class ListaRestaurantesAdapter extends RecyclerView.Adapter<ListaRestaurantesAdapter.RestauranteViewHolder>{

@@ -11,7 +11,6 @@ public class Restaurante implements Parcelable {
 
     String nombre;
     String telefono;
-    Categoria categoria;
     String descripcion;
     String carta;
     String urlFoto;
@@ -111,13 +110,6 @@ public class Restaurante implements Parcelable {
         this.telefono = telefono;
     }
 
-    public Categoria getCategoria() {
-        return categoria;
-    }
-
-    public void setCategoria(Categoria categoria) {
-        this.categoria = categoria;
-    }
 
     public String getDescripcion() {
         return descripcion;
@@ -192,7 +184,6 @@ public class Restaurante implements Parcelable {
         return "Restaurante{" +
                 "nombre='" + nombre + '\'' +
                 ", telefono='" + telefono + '\'' +
-                ", categoria=" + categoria +
                 ", descripcion='" + descripcion + '\'' +
                 ", Imagencarta='" + imagenCarta + '\'' +
                 '}';
